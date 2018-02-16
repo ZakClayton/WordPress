@@ -2896,7 +2896,7 @@ function previous_comments_link( $label = '' ) {
  * @global WP_Rewrite $wp_rewrite
  *
  * @param string|array $args Optional args. See paginate_links(). Default empty array.
- * @return string|void Markup for pagination links.
+ * @return string|array|void Markup for comment page links or array of comment page links.
  */
 function paginate_comments_links( $args = array() ) {
 	global $wp_rewrite;
@@ -2925,7 +2925,7 @@ function paginate_comments_links( $args = array() ) {
 	$args       = wp_parse_args( $args, $defaults );
 	$page_links = paginate_links( $args );
 
-	if ( $args['echo'] ) {
+	if ( $args['echo'] && 'array' !== $args['type'] ) {
 		echo $page_links;
 	} else {
 		return $page_links;
@@ -3713,7 +3713,7 @@ function wp_get_canonical_url( $post = null ) {
  * Outputs rel=canonical for singular queries.
  *
  * @since 2.9.0
- * @since 4.6.0 Adjusted to use wp_get_canonical_url().
+ * @since 4.6.0 Adjusted to use `wp_get_canonical_url()`.
  */
 function rel_canonical() {
 	if ( ! is_singular() ) {
@@ -3742,7 +3742,7 @@ function rel_canonical() {
  * via the {@see 'pre_get_shortlink'} filter or filter the output via the {@see 'get_shortlink'}
  * filter.
  *
- * @since 3.0.0.
+ * @since 3.0.0
  *
  * @param int    $id          Optional. A post or site id. Default is 0, which means the current post or site.
  * @param string $context     Optional. Whether the id is a 'site' id, 'post' id, or 'media' id. If 'post',
