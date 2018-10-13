@@ -645,7 +645,9 @@ function get_bloginfo( $show = '', $filter = 'raw' ) {
 		case 'home': // DEPRECATED
 		case 'siteurl': // DEPRECATED
 			_deprecated_argument(
-				__FUNCTION__, '2.2.0', sprintf(
+				__FUNCTION__,
+				'2.2.0',
+				sprintf(
 					/* translators: 1: 'siteurl'/'home' argument, 2: bloginfo() function name, 3: 'url' argument */
 					__( 'The %1$s option is deprecated for the family of %2$s functions. Use the %3$s option instead.' ),
 					'<code>' . $show . '</code>',
@@ -722,7 +724,9 @@ function get_bloginfo( $show = '', $filter = 'raw' ) {
 			break;
 		case 'text_direction':
 			_deprecated_argument(
-				__FUNCTION__, '2.2.0', sprintf(
+				__FUNCTION__,
+				'2.2.0',
+				sprintf(
 					/* translators: 1: 'text_direction' argument, 2: bloginfo() function name, 3: is_rtl() function name */
 					__( 'The %1$s option is deprecated for the family of %2$s functions. Use the %3$s function instead.' ),
 					'<code>' . $show . '</code>',
@@ -1490,22 +1494,22 @@ function the_archive_title( $before = '', $after = '' ) {
  */
 function get_the_archive_title() {
 	if ( is_category() ) {
-		/* translators: Category archive title. 1: Category name */
+		/* translators: Category archive title. %s: Category name */
 		$title = sprintf( __( 'Category: %s' ), single_cat_title( '', false ) );
 	} elseif ( is_tag() ) {
-		/* translators: Tag archive title. 1: Tag name */
+		/* translators: Tag archive title. %s: Tag name */
 		$title = sprintf( __( 'Tag: %s' ), single_tag_title( '', false ) );
 	} elseif ( is_author() ) {
-		/* translators: Author archive title. 1: Author name */
+		/* translators: Author archive title. %s: Author name */
 		$title = sprintf( __( 'Author: %s' ), '<span class="vcard">' . get_the_author() . '</span>' );
 	} elseif ( is_year() ) {
-		/* translators: Yearly archive title. 1: Year */
+		/* translators: Yearly archive title. %s: Year */
 		$title = sprintf( __( 'Year: %s' ), get_the_date( _x( 'Y', 'yearly archives date format' ) ) );
 	} elseif ( is_month() ) {
-		/* translators: Monthly archive title. 1: Month name and year */
+		/* translators: Monthly archive title. %s: Month name and year */
 		$title = sprintf( __( 'Month: %s' ), get_the_date( _x( 'F Y', 'monthly archives date format' ) ) );
 	} elseif ( is_day() ) {
-		/* translators: Daily archive title. 1: Date */
+		/* translators: Daily archive title. %s: Date */
 		$title = sprintf( __( 'Day: %s' ), get_the_date( _x( 'F j, Y', 'daily archives date format' ) ) );
 	} elseif ( is_tax( 'post_format' ) ) {
 		if ( is_tax( 'post_format', 'post-format-aside' ) ) {
@@ -1528,7 +1532,7 @@ function get_the_archive_title() {
 			$title = _x( 'Chats', 'post format archive title' );
 		}
 	} elseif ( is_post_type_archive() ) {
-		/* translators: Post type archive title. 1: Post type name */
+		/* translators: Post type archive title. %s: Post type name */
 		$title = sprintf( __( 'Archives: %s' ), post_type_archive_title( '', false ) );
 	} elseif ( is_tax() ) {
 		$tax = get_taxonomy( get_queried_object()->taxonomy );
@@ -1886,7 +1890,8 @@ function wp_get_archives( $args = '' ) {
 						array(
 							'm' => $arc_year,
 							'w' => $result->week,
-						), home_url( '/' )
+						),
+						home_url( '/' )
 					);
 					if ( 'post' !== $r['post_type'] ) {
 						$url = add_query_arg( 'post_type', $r['post_type'], $url );
@@ -2106,7 +2111,8 @@ function get_calendar( $initial = true, $echo = true ) {
 		"SELECT DISTINCT DAYOFMONTH(post_date)
 		FROM $wpdb->posts WHERE post_date >= '{$thisyear}-{$thismonth}-01 00:00:00'
 		AND post_type = 'post' AND post_status = 'publish'
-		AND post_date <= '{$thisyear}-{$thismonth}-{$last_day} 23:59:59'", ARRAY_N
+		AND post_date <= '{$thisyear}-{$thismonth}-{$last_day} 23:59:59'",
+		ARRAY_N
 	);
 	if ( $dayswithposts ) {
 		foreach ( (array) $dayswithposts as $daywith ) {
@@ -2140,7 +2146,7 @@ function get_calendar( $initial = true, $echo = true ) {
 		if ( in_array( $day, $daywithpost ) ) {
 			// any posts today?
 			$date_format = date( _x( 'F j, Y', 'daily archives date format' ), strtotime( "{$thisyear}-{$thismonth}-{$day}" ) );
-			/* translators: Post calendar label. 1: Date */
+			/* translators: Post calendar label. %s: Date */
 			$label            = sprintf( __( 'Posts published on %s' ), $date_format );
 			$calendar_output .= sprintf(
 				'<a href="%s" aria-label="%s">%s</a>',
@@ -2301,9 +2307,9 @@ function get_the_date( $d = '', $post = null ) {
 	}
 
 	if ( '' == $d ) {
-		$the_date = mysql2date( get_option( 'date_format' ), $post->post_date );
+		$the_date = get_post_time( get_option( 'date_format' ), false, $post, true );
 	} else {
-		$the_date = mysql2date( $d, $post->post_date );
+		$the_date = get_post_time( $d, false, $post, true );
 	}
 
 	/**
@@ -2898,11 +2904,11 @@ function wp_site_icon() {
 	}
 
 	/**
-	 * Filters the site icon meta tags, so Plugins can add their own.
+	 * Filters the site icon meta tags, so plugins can add their own.
 	 *
 	 * @since 4.3.0
 	 *
-	 * @param array $meta_tags Site Icon meta elements.
+	 * @param string[] $meta_tags Array of Site Icon meta tags.
 	 */
 	$meta_tags = apply_filters( 'site_icon_meta_tags', $meta_tags );
 	$meta_tags = array_filter( $meta_tags );
@@ -2937,7 +2943,7 @@ function wp_resource_hints() {
 	 * The path is removed in the foreach loop below.
 	 */
 	/** This filter is documented in wp-includes/formatting.php */
-	$hints['dns-prefetch'][] = apply_filters( 'emoji_svg_url', 'https://s.w.org/images/core/emoji/2.4/svg/' );
+	$hints['dns-prefetch'][] = apply_filters( 'emoji_svg_url', 'https://s.w.org/images/core/emoji/11/svg/' );
 
 	foreach ( $hints as $relation_type => $urls ) {
 		$unique_urls = array();
@@ -3359,7 +3365,8 @@ function wp_enqueue_code_editor( $args ) {
 
 	if ( 'text/css' === $type ) {
 		$settings['codemirror'] = array_merge(
-			$settings['codemirror'], array(
+			$settings['codemirror'],
+			array(
 				'mode'              => 'css',
 				'lint'              => true,
 				'autoCloseBrackets' => true,
@@ -3368,7 +3375,8 @@ function wp_enqueue_code_editor( $args ) {
 		);
 	} elseif ( 'text/x-scss' === $type || 'text/x-less' === $type || 'text/x-sass' === $type ) {
 		$settings['codemirror'] = array_merge(
-			$settings['codemirror'], array(
+			$settings['codemirror'],
+			array(
 				'mode'              => $type,
 				'lint'              => false,
 				'autoCloseBrackets' => true,
@@ -3377,13 +3385,15 @@ function wp_enqueue_code_editor( $args ) {
 		);
 	} elseif ( 'text/x-diff' === $type ) {
 		$settings['codemirror'] = array_merge(
-			$settings['codemirror'], array(
+			$settings['codemirror'],
+			array(
 				'mode' => 'diff',
 			)
 		);
 	} elseif ( 'text/html' === $type ) {
 		$settings['codemirror'] = array_merge(
-			$settings['codemirror'], array(
+			$settings['codemirror'],
+			array(
 				'mode'              => 'htmlmixed',
 				'lint'              => true,
 				'autoCloseBrackets' => true,
@@ -3399,14 +3409,16 @@ function wp_enqueue_code_editor( $args ) {
 		}
 	} elseif ( 'text/x-gfm' === $type ) {
 		$settings['codemirror'] = array_merge(
-			$settings['codemirror'], array(
+			$settings['codemirror'],
+			array(
 				'mode'                => 'gfm',
 				'highlightFormatting' => true,
 			)
 		);
 	} elseif ( 'application/javascript' === $type || 'text/javascript' === $type ) {
 		$settings['codemirror'] = array_merge(
-			$settings['codemirror'], array(
+			$settings['codemirror'],
+			array(
 				'mode'              => 'javascript',
 				'lint'              => true,
 				'autoCloseBrackets' => true,
@@ -3415,7 +3427,8 @@ function wp_enqueue_code_editor( $args ) {
 		);
 	} elseif ( false !== strpos( $type, 'json' ) ) {
 		$settings['codemirror'] = array_merge(
-			$settings['codemirror'], array(
+			$settings['codemirror'],
+			array(
 				'mode'              => array(
 					'name' => 'javascript',
 				),
@@ -3431,7 +3444,8 @@ function wp_enqueue_code_editor( $args ) {
 		}
 	} elseif ( false !== strpos( $type, 'jsx' ) ) {
 		$settings['codemirror'] = array_merge(
-			$settings['codemirror'], array(
+			$settings['codemirror'],
+			array(
 				'mode'              => 'jsx',
 				'autoCloseBrackets' => true,
 				'matchBrackets'     => true,
@@ -3439,20 +3453,23 @@ function wp_enqueue_code_editor( $args ) {
 		);
 	} elseif ( 'text/x-markdown' === $type ) {
 		$settings['codemirror'] = array_merge(
-			$settings['codemirror'], array(
+			$settings['codemirror'],
+			array(
 				'mode'                => 'markdown',
 				'highlightFormatting' => true,
 			)
 		);
 	} elseif ( 'text/nginx' === $type ) {
 		$settings['codemirror'] = array_merge(
-			$settings['codemirror'], array(
+			$settings['codemirror'],
+			array(
 				'mode' => 'nginx',
 			)
 		);
 	} elseif ( 'application/x-httpd-php' === $type ) {
 		$settings['codemirror'] = array_merge(
-			$settings['codemirror'], array(
+			$settings['codemirror'],
+			array(
 				'mode'              => 'php',
 				'autoCloseBrackets' => true,
 				'autoCloseTags'     => true,
@@ -3464,7 +3481,8 @@ function wp_enqueue_code_editor( $args ) {
 		);
 	} elseif ( 'text/x-sql' === $type || 'text/x-mysql' === $type ) {
 		$settings['codemirror'] = array_merge(
-			$settings['codemirror'], array(
+			$settings['codemirror'],
+			array(
 				'mode'              => 'sql',
 				'autoCloseBrackets' => true,
 				'matchBrackets'     => true,
@@ -3472,7 +3490,8 @@ function wp_enqueue_code_editor( $args ) {
 		);
 	} elseif ( false !== strpos( $type, 'xml' ) ) {
 		$settings['codemirror'] = array_merge(
-			$settings['codemirror'], array(
+			$settings['codemirror'],
+			array(
 				'mode'              => 'xml',
 				'autoCloseBrackets' => true,
 				'autoCloseTags'     => true,
@@ -3483,7 +3502,8 @@ function wp_enqueue_code_editor( $args ) {
 		);
 	} elseif ( 'text/x-yaml' === $type ) {
 		$settings['codemirror'] = array_merge(
-			$settings['codemirror'], array(
+			$settings['codemirror'],
+			array(
 				'mode' => 'yaml',
 			)
 		);
@@ -3918,9 +3938,9 @@ function paginate_links( $args = '' ) {
 }
 
 /**
- * Registers an admin colour scheme css file.
+ * Registers an admin color scheme css file.
  *
- * Allows a plugin to register a new admin colour scheme. For example:
+ * Allows a plugin to register a new admin color scheme. For example:
  *
  *     wp_admin_css_color( 'classic', __( 'Classic' ), admin_url( "css/colors-classic.css" ), array(
  *         '#07273E', '#14568A', '#D54E21', '#2683AE'
@@ -3959,7 +3979,12 @@ function wp_admin_css_color( $key, $name, $url, $colors = array(), $icons = arra
 }
 
 /**
- * Registers the default Admin color schemes
+ * Registers the default admin color schemes.
+ *
+ * Registers the initial set of eight color schemes in the Profile section
+ * of the dashboard which allows for styling the admin menu and toolbar.
+ *
+ * @see wp_admin_css_color()
  *
  * @since 3.0.0
  */
@@ -3968,7 +3993,8 @@ function register_admin_color_schemes() {
 	$suffix .= SCRIPT_DEBUG ? '' : '.min';
 
 	wp_admin_css_color(
-		'fresh', _x( 'Default', 'admin color scheme' ),
+		'fresh',
+		_x( 'Default', 'admin color scheme' ),
 		false,
 		array( '#222', '#333', '#0073aa', '#00a0d2' ),
 		array(
@@ -3984,7 +4010,8 @@ function register_admin_color_schemes() {
 	}
 
 	wp_admin_css_color(
-		'light', _x( 'Light', 'admin color scheme' ),
+		'light',
+		_x( 'Light', 'admin color scheme' ),
 		admin_url( "css/colors/light/colors$suffix.css" ),
 		array( '#e5e5e5', '#999', '#d64e07', '#04a4cc' ),
 		array(
@@ -3995,7 +4022,8 @@ function register_admin_color_schemes() {
 	);
 
 	wp_admin_css_color(
-		'blue', _x( 'Blue', 'admin color scheme' ),
+		'blue',
+		_x( 'Blue', 'admin color scheme' ),
 		admin_url( "css/colors/blue/colors$suffix.css" ),
 		array( '#096484', '#4796b3', '#52accc', '#74B6CE' ),
 		array(
@@ -4006,7 +4034,8 @@ function register_admin_color_schemes() {
 	);
 
 	wp_admin_css_color(
-		'midnight', _x( 'Midnight', 'admin color scheme' ),
+		'midnight',
+		_x( 'Midnight', 'admin color scheme' ),
 		admin_url( "css/colors/midnight/colors$suffix.css" ),
 		array( '#25282b', '#363b3f', '#69a8bb', '#e14d43' ),
 		array(
@@ -4017,7 +4046,8 @@ function register_admin_color_schemes() {
 	);
 
 	wp_admin_css_color(
-		'sunrise', _x( 'Sunrise', 'admin color scheme' ),
+		'sunrise',
+		_x( 'Sunrise', 'admin color scheme' ),
 		admin_url( "css/colors/sunrise/colors$suffix.css" ),
 		array( '#b43c38', '#cf4944', '#dd823b', '#ccaf0b' ),
 		array(
@@ -4028,7 +4058,8 @@ function register_admin_color_schemes() {
 	);
 
 	wp_admin_css_color(
-		'ectoplasm', _x( 'Ectoplasm', 'admin color scheme' ),
+		'ectoplasm',
+		_x( 'Ectoplasm', 'admin color scheme' ),
 		admin_url( "css/colors/ectoplasm/colors$suffix.css" ),
 		array( '#413256', '#523f6d', '#a3b745', '#d46f15' ),
 		array(
@@ -4039,7 +4070,8 @@ function register_admin_color_schemes() {
 	);
 
 	wp_admin_css_color(
-		'ocean', _x( 'Ocean', 'admin color scheme' ),
+		'ocean',
+		_x( 'Ocean', 'admin color scheme' ),
 		admin_url( "css/colors/ocean/colors$suffix.css" ),
 		array( '#627c83', '#738e96', '#9ebaa0', '#aa9d88' ),
 		array(
@@ -4050,7 +4082,8 @@ function register_admin_color_schemes() {
 	);
 
 	wp_admin_css_color(
-		'coffee', _x( 'Coffee', 'admin color scheme' ),
+		'coffee',
+		_x( 'Coffee', 'admin color scheme' ),
 		admin_url( "css/colors/coffee/colors$suffix.css" ),
 		array( '#46403c', '#59524c', '#c7a589', '#9ea476' ),
 		array(
@@ -4244,25 +4277,25 @@ function get_the_generator( $type = '' ) {
 
 	switch ( $type ) {
 		case 'html':
-			$gen = '<meta name="generator" content="WordPress ' . get_bloginfo( 'version' ) . '">';
+			$gen = '<meta name="generator" content="WordPress ' . esc_attr( get_bloginfo( 'version' ) ) . '">';
 			break;
 		case 'xhtml':
-			$gen = '<meta name="generator" content="WordPress ' . get_bloginfo( 'version' ) . '" />';
+			$gen = '<meta name="generator" content="WordPress ' . esc_attr( get_bloginfo( 'version' ) ) . '" />';
 			break;
 		case 'atom':
-			$gen = '<generator uri="https://wordpress.org/" version="' . get_bloginfo_rss( 'version' ) . '">WordPress</generator>';
+			$gen = '<generator uri="https://wordpress.org/" version="' . esc_attr( get_bloginfo_rss( 'version' ) ) . '">WordPress</generator>';
 			break;
 		case 'rss2':
-			$gen = '<generator>https://wordpress.org/?v=' . get_bloginfo_rss( 'version' ) . '</generator>';
+			$gen = '<generator>' . esc_url_raw( 'https://wordpress.org/?v=' . get_bloginfo_rss( 'version' ) ) . '</generator>';
 			break;
 		case 'rdf':
-			$gen = '<admin:generatorAgent rdf:resource="https://wordpress.org/?v=' . get_bloginfo_rss( 'version' ) . '" />';
+			$gen = '<admin:generatorAgent rdf:resource="' . esc_url_raw( 'https://wordpress.org/?v=' . get_bloginfo_rss( 'version' ) ) . '" />';
 			break;
 		case 'comment':
-			$gen = '<!-- generator="WordPress/' . get_bloginfo( 'version' ) . '" -->';
+			$gen = '<!-- generator="WordPress/' . esc_attr( get_bloginfo( 'version' ) ) . '" -->';
 			break;
 		case 'export':
-			$gen = '<!-- generator="WordPress/' . get_bloginfo_rss( 'version' ) . '" created="' . date( 'Y-m-d H:i' ) . '" -->';
+			$gen = '<!-- generator="WordPress/' . esc_attr( get_bloginfo_rss( 'version' ) ) . '" created="' . date( 'Y-m-d H:i' ) . '" -->';
 			break;
 	}
 

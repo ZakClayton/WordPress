@@ -604,6 +604,7 @@ class WP_Query {
 	 *              Introduced `RAND(x)` syntax for `$orderby`, which allows an integer seed value to random sorts.
 	 * @since 4.6.0 Added 'post_name__in' support for `$orderby`. Introduced the `$lazy_load_term_meta` argument.
 	 * @since 4.9.0 Introduced the `$comment_count` parameter.
+	 * @since 5.0.0 Introduced the `$meta_compare_key` parameter.
 	 *
 	 * @param string|array $query {
 	 *     Optional. Array or string of Query parameters.
@@ -640,6 +641,7 @@ class WP_Query {
 	 *     @type int          $m                       Combination YearMonth. Accepts any four-digit year and month
 	 *                                                 numbers 1-12. Default empty.
 	 *     @type string       $meta_compare            Comparison operator to test the 'meta_value'.
+	 *     @type string       $meta_compare_key        Comparison operator to test the 'meta_key'.
 	 *     @type string       $meta_key                Custom field key.
 	 *     @type array        $meta_query              An associative array of WP_Meta_Query arguments. See WP_Meta_Query.
 	 *     @type string       $meta_value              Custom field value.
@@ -1097,14 +1099,16 @@ class WP_Query {
 					$terms = preg_split( '/[+]+/', $term );
 					foreach ( $terms as $term ) {
 						$tax_query[] = array_merge(
-							$tax_query_defaults, array(
+							$tax_query_defaults,
+							array(
 								'terms' => array( $term ),
 							)
 						);
 					}
 				} else {
 					$tax_query[] = array_merge(
-						$tax_query_defaults, array(
+						$tax_query_defaults,
+						array(
 							'terms' => preg_split( '/[,]+/', $term ),
 						)
 					);
@@ -1377,7 +1381,7 @@ class WP_Query {
 	 *
 	 * @since 3.7.0
 	 *
-	 * @param array $terms Terms to check.
+	 * @param string[] $terms Array of terms to check.
 	 * @return array Terms that are not stopwords.
 	 */
 	protected function parse_search_terms( $terms ) {
@@ -1426,7 +1430,8 @@ class WP_Query {
 		 * words into your language. Instead, look for and provide commonly accepted stopwords in your language.
 		 */
 		$words = explode(
-			',', _x(
+			',',
+			_x(
 				'about,an,are,as,at,be,by,com,for,from,how,in,is,it,of,on,or,that,the,this,to,was,what,when,where,who,will,with,www',
 				'Comma-separated list of search stopwords in your language'
 			)
@@ -1445,7 +1450,7 @@ class WP_Query {
 		 *
 		 * @since 3.7.0
 		 *
-		 * @param array $stopwords Stopwords.
+		 * @param string[] $stopwords Array of stopwords.
 		 */
 		$this->stopwords = apply_filters( 'wp_search_stopwords', $stopwords );
 		return $this->stopwords;
@@ -1681,14 +1686,14 @@ class WP_Query {
 	}
 
 	/**
-	 * Retrieve the posts based on query variables.
+	 * Retrieves an array of posts based on query variables.
 	 *
 	 * There are a few filters and actions that can be used to modify the post
 	 * database query.
 	 *
 	 * @since 1.5.0
 	 *
-	 * @return array List of posts.
+	 * @return WP_Post[]|int[] Array of post objects or post IDs.
 	 */
 	public function get_posts() {
 		global $wpdb;
@@ -1740,7 +1745,8 @@ class WP_Query {
 
 		if ( isset( $q['caller_get_posts'] ) ) {
 			_deprecated_argument(
-				'WP_Query', '3.1.0',
+				'WP_Query',
+				'3.1.0',
 				/* translators: 1: caller_get_posts, 2: ignore_sticky_posts */
 				sprintf(
 					__( '%1$s is deprecated. Use %2$s instead.' ),
@@ -2199,7 +2205,8 @@ class WP_Query {
 				$q['comment_count'] = array_merge(
 					array(
 						'compare' => '=',
-					), $q['comment_count']
+					),
+					$q['comment_count']
 				);
 
 				// Fallback for invalid compare operators is '='.
@@ -2692,7 +2699,7 @@ class WP_Query {
 			 *
 			 * @since 3.1.0
 			 *
-			 * @param array    $clauses The list of clauses for the query.
+			 * @param string[] $clauses Associative array of the clauses for the query.
 			 * @param WP_Query $this    The WP_Query instance (passed by reference).
 			 */
 			$clauses = (array) apply_filters_ref_array( 'posts_clauses', array( compact( $pieces ), &$this ) );
@@ -2816,7 +2823,7 @@ class WP_Query {
 			 *
 			 * @since 3.1.0
 			 *
-			 * @param array    $pieces The pieces of the query.
+			 * @param string[] $pieces Associative array of the pieces of the query.
 			 * @param WP_Query $this   The WP_Query instance (passed by reference).
 			 */
 			$clauses = (array) apply_filters_ref_array( 'posts_clauses_request', array( compact( $pieces ), &$this ) );
@@ -2963,8 +2970,8 @@ class WP_Query {
 			 *
 			 * @since 2.3.0
 			 *
-			 * @param array    $posts The post results array.
-			 * @param WP_Query $this The WP_Query instance (passed by reference).
+			 * @param WP_Post[] $posts Array of post objects.
+			 * @param WP_Query  $this  The WP_Query instance (passed by reference).
 			 */
 			$this->posts = apply_filters_ref_array( 'posts_results', array( $this->posts, &$this ) );
 		}
@@ -3100,8 +3107,8 @@ class WP_Query {
 			 *
 			 * @since 1.5.0
 			 *
-			 * @param array    $posts The array of retrieved posts.
-			 * @param WP_Query $this The WP_Query instance (passed by reference).
+			 * @param WP_Post[] $posts Array of post objects.
+			 * @param WP_Query  $this The WP_Query instance (passed by reference).
 			 */
 			$this->posts = apply_filters_ref_array( 'the_posts', array( $this->posts, &$this ) );
 		}
@@ -3161,7 +3168,7 @@ class WP_Query {
 			if ( is_array( $this->posts ) ) {
 				$this->found_posts = count( $this->posts );
 			} else {
-				if ( null === $this->posts ) {  
+				if ( null === $this->posts ) {
 					$this->found_posts = 0;
 				} else {
 					$this->found_posts = 1;
@@ -3350,7 +3357,7 @@ class WP_Query {
 	 * @since 1.5.0
 	 *
 	 * @param string|array $query URL query string or array of query arguments.
-	 * @return array List of posts.
+	 * @return WP_Post[]|int[] Array of post objects or post IDs.
 	 */
 	public function query( $query ) {
 		$this->init();
@@ -4175,9 +4182,8 @@ class WP_Query {
 		 *
 		 * @since 4.4.0
 		 *
-		 * @param array   $pages Array of "pages" derived from the post content.
-		 *                       of `<!-- nextpage -->` tags..
-		 * @param WP_Post $post  Current post object.
+		 * @param string[] $pages Array of "pages" from the post content split by `<!-- nextpage -->` tags.
+		 * @param WP_Post  $post  Current post object.
 		 */
 		$pages = apply_filters( 'content_pagination', $pages, $post );
 

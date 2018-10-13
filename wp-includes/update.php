@@ -189,7 +189,8 @@ function wp_version_check( $extra_stats = array(), $force_check = false ) {
 			}
 		}
 		$offer = (object) array_intersect_key(
-			$offer, array_fill_keys(
+			$offer,
+			array_fill_keys(
 				array(
 					'response',
 					'download',
@@ -204,7 +205,8 @@ function wp_version_check( $extra_stats = array(), $force_check = false ) {
 					'notify_email',
 					'support_email',
 					'new_files',
-				), ''
+				),
+				''
 			)
 		);
 	}
@@ -600,7 +602,7 @@ function wp_maybe_auto_update() {
  *
  * @since 3.7.0
  *
- * @return array
+ * @return object[] Array of translation objects that have available updates.
  */
 function wp_get_translation_updates() {
 	$updates    = array();
@@ -665,15 +667,15 @@ function wp_get_update_data() {
 	$counts['total'] = $counts['plugins'] + $counts['themes'] + $counts['wordpress'] + $counts['translations'];
 	$titles          = array();
 	if ( $counts['wordpress'] ) {
-		/* translators: 1: Number of updates available to WordPress */
+		/* translators: %d: number of updates available to WordPress */
 		$titles['wordpress'] = sprintf( __( '%d WordPress Update' ), $counts['wordpress'] );
 	}
 	if ( $counts['plugins'] ) {
-		/* translators: 1: Number of updates available to plugins */
+		/* translators: %d: number of updates available to plugins */
 		$titles['plugins'] = sprintf( _n( '%d Plugin Update', '%d Plugin Updates', $counts['plugins'] ), $counts['plugins'] );
 	}
 	if ( $counts['themes'] ) {
-		/* translators: 1: Number of updates available to themes */
+		/* translators: %d: number of updates available to themes */
 		$titles['themes'] = sprintf( _n( '%d Theme Update', '%d Theme Updates', $counts['themes'] ), $counts['themes'] );
 	}
 	if ( $counts['translations'] ) {

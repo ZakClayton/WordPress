@@ -249,8 +249,9 @@ class WP_Http_Streams {
 			}
 			if ( ! $stream_handle ) {
 				return new WP_Error(
-					'http_request_failed', sprintf(
-						/* translators: 1: fopen() 2: file name */
+					'http_request_failed',
+					sprintf(
+						/* translators: 1: fopen(), 2: file name */
 						__( 'Could not open handle for %1$s to %2$s.' ),
 						'fopen()',
 						$r['filename']
@@ -358,7 +359,6 @@ class WP_Http_Streams {
 	 * IP Address support is included if the request is being made to an IP address.
 	 *
 	 * @since 3.7.0
-	 * @static
 	 *
 	 * @param stream $stream The PHP Stream which the SSL request is being made over
 	 * @param string $host The hostname being requested
@@ -420,7 +420,6 @@ class WP_Http_Streams {
 	/**
 	 * Determines whether this class can be used for retrieving a URL.
 	 *
-	 * @static
 	 * @since 2.7.0
 	 * @since 3.7.0 Combined with the fsockopen transport and switched to stream_socket_client().
 	 *

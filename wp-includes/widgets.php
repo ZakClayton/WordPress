@@ -426,7 +426,7 @@ function wp_sidebar_description( $id ) {
 	global $wp_registered_sidebars;
 
 	if ( isset( $wp_registered_sidebars[ $id ]['description'] ) ) {
-		return esc_html( $wp_registered_sidebars[ $id ]['description'] );
+		return wp_kses( $wp_registered_sidebars[ $id ]['description'], 'sidebar_description' );
 	}
 }
 
@@ -681,7 +681,8 @@ function dynamic_sidebar( $index = 1 ) {
 		$params = array_merge(
 			array(
 				array_merge(
-					$sidebar, array(
+					$sidebar,
+					array(
 						'widget_id'   => $id,
 						'widget_name' => $wp_registered_widgets[ $id ]['name'],
 					)
@@ -812,11 +813,11 @@ function dynamic_sidebar( $index = 1 ) {
  *
  * NOTE: $widget_id and $id_base are the same for single widgets. To be effective
  * this function has to run after widgets have initialized, at action {@see 'init'} or later.
- * 
+ *
  * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/ 
+ * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
  * Conditional Tags} article in the Theme Developer Handbook.
- * 
+ *
  * @since 2.2.0
  *
  * @global array $wp_registered_widgets
@@ -854,11 +855,11 @@ function is_active_widget( $callback = false, $widget_id = false, $id_base = fal
 
 /**
  * Determines whether the dynamic sidebar is enabled and used by the theme.
- * 
+ *
  * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/ 
+ * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
  * Conditional Tags} article in the Theme Developer Handbook.
- * 
+ *
  * @since 2.2.0
  *
  * @global array $wp_registered_widgets
@@ -883,11 +884,11 @@ function is_dynamic_sidebar() {
 
 /**
  * Determines whether a sidebar is in use.
- * 
+ *
  * For more information on this and similar theme functions, check out
- * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/ 
+ * the {@link https://developer.wordpress.org/themes/basics/conditional-tags/
  * Conditional Tags} article in the Theme Developer Handbook.
- * 
+ *
  * @since 2.8.0
  *
  * @param string|int $index Sidebar name, id or number to check.
@@ -1573,7 +1574,7 @@ function wp_widget_rss_form( $args, $inputs = null ) {
 
 	$esc_number = esc_attr( $args['number'] );
 	if ( $inputs['url'] ) :
-?>
+		?>
 	<p><label for="rss-url-<?php echo $esc_number; ?>"><?php _e( 'Enter the RSS feed URL here:' ); ?></label>
 	<input class="widefat" id="rss-url-<?php echo $esc_number; ?>" name="widget-rss[<?php echo $esc_number; ?>][url]" type="text" value="<?php echo esc_url( $args['url'] ); ?>" /></p>
 <?php endif; if ( $inputs['title'] ) : ?>
@@ -1597,14 +1598,14 @@ function wp_widget_rss_form( $args, $inputs = null ) {
 <?php endif; if ( $inputs['show_date'] ) : ?>
 	<p><input id="rss-show-date-<?php echo $esc_number; ?>" name="widget-rss[<?php echo $esc_number; ?>][show_date]" type="checkbox" value="1" <?php checked( $args['show_date'] ); ?>/>
 	<label for="rss-show-date-<?php echo $esc_number; ?>"><?php _e( 'Display item date?' ); ?></label></p>
-<?php
+	<?php
 	endif;
 foreach ( array_keys( $default_inputs ) as $input ) :
 	if ( 'hidden' === $inputs[ $input ] ) :
 		$id = str_replace( '_', '-', $input );
-?>
+		?>
 <input type="hidden" id="rss-<?php echo esc_attr( $id ); ?>-<?php echo $esc_number; ?>" name="widget-rss[<?php echo $esc_number; ?>][<?php echo esc_attr( $input ); ?>]" value="<?php echo esc_attr( $args[ $input ] ); ?>" />
-<?php
+		<?php
 	endif;
 	endforeach;
 }

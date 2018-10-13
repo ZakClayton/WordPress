@@ -38,7 +38,7 @@ if ( ! $post_type_object ) {
 
 if ( ! current_user_can( $post_type_object->cap->edit_posts ) ) {
 	wp_die(
-		'<h1>' . __( 'You don&#8217;t have permission to do this.' ) . '</h1>' .
+		'<h1>' . __( 'You need a higher level of permission.' ) . '</h1>' .
 		'<p>' . __( 'Sorry, you are not allowed to edit posts in this post type.' ) . '</p>',
 		403
 	);
@@ -127,7 +127,8 @@ if ( $doaction ) {
 					'trashed' => $trashed,
 					'ids'     => join( ',', $post_ids ),
 					'locked'  => $locked,
-				), $sendback
+				),
+				$sendback
 			);
 			break;
 		case 'untrash':
@@ -290,7 +291,8 @@ get_current_screen()->set_screen_reader_content(
 );
 
 add_screen_option(
-	'per_page', array(
+	'per_page',
+	array(
 		'default' => 20,
 		'option'  => 'edit_' . $post_type . '_per_page',
 	)
@@ -329,9 +331,9 @@ $bulk_messages['page'] = array(
  *
  * @since 3.7.0
  *
- * @param array $bulk_messages Arrays of messages, each keyed by the corresponding post type. Messages are
- *                             keyed with 'updated', 'locked', 'deleted', 'trashed', and 'untrashed'.
- * @param array $bulk_counts   Array of item counts for each message, used to build internationalized strings.
+ * @param array[] $bulk_messages Arrays of messages, each keyed by the corresponding post type. Messages are
+ *                               keyed with 'updated', 'locked', 'deleted', 'trashed', and 'untrashed'.
+ * @param int[]   $bulk_counts   Array of item counts for each message, used to build internationalized strings.
  */
 $bulk_messages = apply_filters( 'bulk_post_updated_messages', $bulk_messages, $bulk_counts );
 $bulk_counts   = array_filter( $bulk_counts );

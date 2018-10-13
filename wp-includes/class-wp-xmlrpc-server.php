@@ -1555,7 +1555,8 @@ class wp_xmlrpc_server extends IXR_Server {
 					$ambiguous_terms = array();
 					if ( is_taxonomy_hierarchical( $taxonomy ) ) {
 						$tax_term_names = get_terms(
-							$taxonomy, array(
+							$taxonomy,
+							array(
 								'fields'     => 'names',
 								'hide_empty' => false,
 							)
@@ -3879,7 +3880,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		if ( ! $comment_ID ) {
-			return new IXR_Error( 403, __( 'An error has occurred.' ) );
+			return new IXR_Error( 403, __( 'Something went wrong.' ) );
 		}
 
 		/**
@@ -3920,7 +3921,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		if ( ! current_user_can( 'publish_posts' ) ) {
-			return new IXR_Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
+			return new IXR_Error( 403, __( 'Sorry, you are not allowed to access details about this site.' ) );
 		}
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
@@ -3961,7 +3962,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
-			return new IXR_Error( 403, __( 'Sorry, you are not allowed access to details of this post.' ) );
+			return new IXR_Error( 403, __( 'Sorry, you are not allowed to access details of this post.' ) );
 		}
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
@@ -4002,7 +4003,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			return new IXR_Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
+			return new IXR_Error( 403, __( 'Sorry, you are not allowed to access details about this site.' ) );
 		}
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
@@ -4036,7 +4037,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		if ( ! current_user_can( 'edit_pages' ) ) {
-			return new IXR_Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
+			return new IXR_Error( 403, __( 'Sorry, you are not allowed to access details about this site.' ) );
 		}
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
@@ -4070,7 +4071,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		if ( ! current_user_can( 'edit_pages' ) ) {
-			return new IXR_Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
+			return new IXR_Error( 403, __( 'Sorry, you are not allowed to access details about this site.' ) );
 		}
 
 		$templates            = get_page_templates();
@@ -4331,7 +4332,7 @@ class wp_xmlrpc_server extends IXR_Server {
 		}
 
 		if ( ! current_user_can( 'edit_posts' ) ) {
-			return new IXR_Error( 403, __( 'Sorry, you are not allowed access to details about this site.' ) );
+			return new IXR_Error( 403, __( 'Sorry, you are not allowed to access details about this site.' ) );
 		}
 
 		/** This action is documented in wp-includes/class-wp-xmlrpc-server.php */
@@ -6839,8 +6840,14 @@ class wp_xmlrpc_server extends IXR_Server {
 		$comment_type = 'pingback';
 
 		$commentdata = compact(
-			'comment_post_ID', 'comment_author', 'comment_author_url', 'comment_author_email',
-			'comment_content', 'comment_type', 'remote_source', 'remote_source_original'
+			'comment_post_ID',
+			'comment_author',
+			'comment_author_url',
+			'comment_author_email',
+			'comment_content',
+			'comment_type',
+			'remote_source',
+			'remote_source_original'
 		);
 
 		$comment_ID = wp_new_comment( $commentdata );
